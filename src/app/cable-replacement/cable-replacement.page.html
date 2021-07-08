@@ -1,0 +1,97 @@
+/* 
+
+* Copyright 2021 Panasonic Industry Devices Europe
+
+* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+* 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+* 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+* 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+<!-- Demo Splash Screen -->
+<div *ngIf="showSplash" class="splash bg-white" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
+  <div class="icon">
+    &#xe813;
+  </div>
+  <div class="title pt13 dp-bold" fxLayout="row" fxLayoutAlign="center center">{{'CABLE REPLACEMENT '}}
+    <div class="dp-medium pt13 text-darkgrey"> DEMO</div>
+  </div>
+</div>
+
+<!-- Demo Screen -->
+<div *ngIf="!showSplash" class="page bg-pearl" fxLayout="column" fxLayoutAlign="start center">
+
+  <!-- Header -->
+  <div class=" header" fxLayout="column" fxLayoutAlign="start center">
+
+    <div class="headline">
+
+      <!-- Scan Button -->
+      <div class="scan-button bg-turqoise text-white icon-right ripple" (click)=goToScanPage()>
+        Scan
+      </div>
+
+    </div>
+
+    <!-- Title Group -->
+    <div fxLayout="column" fxLayoutAlign="center center">
+      <!-- Demo Icon -->
+      <div class="icon icon-title">&#xe813;</div>
+      <!-- Title -->
+      <div class="title pt11 dp-bold" fxLayout="row" fxLayoutAlign="center center">{{'CABLE REPLACEMENT '}}
+        <div class="dp-medium pt11 text-darkgrey"> DEMO</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Output Group -->
+  <div #scroll id="scroll" class="scroll-container">
+    <div *ngFor="let msg of messages" fxLayout="column" fxLayoutAlign="start center">
+      <!-- Input Message -->
+      <div *ngIf="msg.direction === 'in'" class="message-group message-group-in" fxLayout="column"
+        fxLayoutAlign="start start">
+        <!-- Message -->
+        <div class="message-bubble dp-regular pt13 text-white bg-darkblue">
+          {{msg.message}}
+        </div>
+        <!-- Time -->
+        <div class="message-time dp-bold pt9 text-iron">
+          {{msg.time.format('hh:mm A')}}
+        </div>
+      </div>
+      <!-- Output message -->
+      <div *ngIf="msg.direction === 'out'" class="message-group message-group-out" fxLayout="column"
+        fxLayoutAlign="start end">
+        <!-- Icon -->
+        <div class="icon text-iron pt33">&#xe802;</div>
+        <!-- Message -->
+        <div class="message-bubble dp-regular pt13 bg-white">
+          {{msg.message}}
+        </div>
+        <!-- Time -->
+        <div class="message-time dp-bold pt9 text-iron">
+          {{msg.time.format('hh:mm A')}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Input group -->
+  <div class="input-group bg-pearl" fxLayout="row" fxLayoutAlign="space-between center" [ngStyle]="{'bottom': keyboardHeight + 'px'}">
+    <!-- Input field -->
+    <input fxFlex="80" [(ngModel)]="inputMessage" class="dp-regular pt13 input-field" type="text" placeholder="Type your message...">
+    <!-- Send Button -->
+    <div class="submit-button bg-turqoise text-white ripple" fxLayoutAlign="center center" (click)="sendMessage()">
+      <div class="icon">&#xe81e;</div>
+    </div>
+  </div>
+
+</div>
