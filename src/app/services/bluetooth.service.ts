@@ -57,11 +57,16 @@ export class BluetoothService {
     characteristic_TX: 'B38312C0-AA89-11E3-9CEF-0002A5D5C51B',
     characteristic_RX: 'B38312C0-AA89-11E3-9CEF-0002A5D5C51B'
   };
-  params1780: DeviceParameter = {                         // PAN1780 service and characteristic parameter
+  paramsNUS: DeviceParameter = {                         // PAN1780 service and characteristic parameter
     service: '6E400001-B5A3-F393-E0A9-E50E24DCCA9E',
     characteristic_TX: '6E400002-B5A3-F393-E0A9-E50E24DCCA9E',
     characteristic_RX: '6E400003-B5A3-F393-E0A9-E50E24DCCA9E'
   };
+  paramsBRSP: DeviceParameter = {
+    service: 'da2b84f1-6279-48de-bdc0-afbea0226079',
+    characteristic_TX: 'bf03260c-7205-4c25-af43-93b1c299d159',
+    characteristic_RX: '18cda784-4bd3-4370-85bb-bfed91ec86af'
+  }
 
   constructor(
     private plt: Platform,
@@ -170,10 +175,18 @@ export class BluetoothService {
           console.log("Found PAN1762");
           // Make a copy of the params with spread operator
           bluetoothDevice.params = {...this.params1762};
-        } else if ( bluetoothDevice.services.findIndex(service => service.toLowerCase() === this.params1780.service.toLowerCase()) != -1 ) {
+        } else if ( bluetoothDevice.services.findIndex(service => service.toLowerCase() === this.paramsNUS.service.toLowerCase()) != -1 ) {
           console.log("Found PAN1780");
           // Make a copy of the params with spread operator
-          bluetoothDevice.params = {...this.params1780};
+          bluetoothDevice.params = {...this.paramsNUS};
+        } else if ( bluetoothDevice.services.findIndex(service => service.toLowerCase() === this.paramsBRSP.service.toLowerCase()) != -1 ) {
+          console.log("Found BRSP Service");
+          // Make a copy of the params with spread operator
+          bluetoothDevice.params = {...this.paramsBRSP};
+          // Set Device into BRSP mode
+          setTimeout(async () => {
+            await this.write_Uint8( new Uint8Array([0x01]), bluetoothDevice.address, bluetoothDevice.params.service, "a87988b9-694c-479c-900e-95dfa6c00a24");
+          }, 1000);
         }
         // Save connected device
         this.dataService.selectedDevice = bluetoothDevice;
@@ -217,6 +230,12 @@ export class BluetoothService {
   public async write( data: ArrayBuffer ) {
     // Input is (address, service, characteristic, data)
     return await this.ble.write(this.dataService.selectedDevice.address, this.dataService.selectedDevice.params.service, this.dataService.selectedDevice.params.characteristic_TX, data);
+  }
+
+  // Send data over BLE
+  public async write_Uint8( data: Uint8Array, address: string, service: string, characteristic: string) {
+    // Input is (address, service, characteristic, data)
+    return await this.ble.write(address, service, characteristic, data.buffer);
   }
 
   // Promise based delay function
